@@ -11,10 +11,5 @@
     { "src": "^/$", "dest": "/api/index.js" },
     { "src": "^/api/(.*)", "dest": "/api/$1" }
   ],
-  "env": {
-    "APP_AUTH_KEY": "@app_auth_key",
-    "DATABASE_URL": "@database_url",
-    "STORAGE_PROVIDER": "vercel-blob"
-  },
   "regions": ["iad1"]
 }
