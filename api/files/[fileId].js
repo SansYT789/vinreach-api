@@ -97,4 +97,4 @@ export default async function handler(req, res) {
   }
 
   return sendError(res, 'Method not allowed', 405);
-        }
+}
