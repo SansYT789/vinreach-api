@@ -15,32 +15,27 @@ export default async function handler(req, res) {
   const { q, type = 'all', field } = req.query;
 
   if (!q) {
-    return sendError(res, "Query parameter 'q' required");
+    return sendError(res, "Query parameter 'q' required", 400);
   }
 
-  try {
-    const results = await db.search(q, type);
+  const results = await db.search(q, type);
 
-    // Apply field filter if specified
-    if (field) {
-      results.posts = results.posts
-        .map(p => p[field] ? { id: p.id, [field]: p[field] } : null)
-        .filter(Boolean);
-      
-      results.users = results.users
-        .map(u => u[field] ? { id: u.id, [field]: u[field] } : null)
-        .filter(Boolean);
-    }
+  // Apply field filter if specified
+  if (field) {
+    results.posts = results.posts
+      .map(p => p[field] ? { id: p.id, [field]: p[field] } : null)
+      .filter(Boolean);
 
-    const totalResults = results.posts.length + results.users.length;
-
-    return sendJSON(res, {
-      limits_pages: Math.ceil(totalResults / 12),
-      filter_search: type,
-      search: [...results.posts, ...results.users]
-    });
-  } catch (error) {
-    console.error('Search error:', error);
-    return sendError(res, 'Search failed', 500);
+    results.users = results.users
+      .map(u => u[field] ? { id: u.id, [field]: u[field] } : null)
+      .filter(Boolean);
   }
+
+  const totalResults = results.posts.length + results.users.length;
+
+  return sendJSON(res, {
+    limits_pages: Math.ceil(totalResults / 12) || 0,
+    filter_search: type,
+    search: [...results.posts, ...results.users]
+  });
 }
