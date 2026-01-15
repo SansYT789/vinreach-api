@@ -10,22 +10,17 @@ export default async function handler(req, res) {
 
   // GET - List all posts
   if (req.method === 'GET') {
-    try {
-      const { field, value, sortBy, order = 'asc' } = req.query;
+    const { field, value, sortBy, order = 'asc' } = req.query;
 
-      const filters = field && value ? { [field]: value } : {};
-      const sort = sortBy ? { field: sortBy, order } : { field: 'created_at', order: 'desc' };
+    const filters = field && value ? { [field]: value } : {};
+    const sort = sortBy ? { field: sortBy, order } : { field: 'created_at', order: 'desc' };
 
-      const posts = await db.findAll('posts', filters, sort);
+    const posts = await db.findAll('posts', filters, sort);
 
-      return sendJSON(res, {
-        limits_pages: Math.ceil(posts.length / 12),
-        posts
-      });
-    } catch (error) {
-      console.error('Get posts error:', error);
-      return sendError(res, 'Failed to fetch posts', 500);
-    }
+    return sendJSON(res, {
+      limits_pages: Math.ceil(posts.length / 12) || 0,
+      posts
+    });
   }
 
   // POST - Create new post
@@ -64,4 +59,4 @@ export default async function handler(req, res) {
   }
 
   return sendError(res, 'Method not allowed', 405);
-    }
+}
