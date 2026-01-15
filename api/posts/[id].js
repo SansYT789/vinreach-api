@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       }
 
       // Delete associated comments
-      await db.delete('comments', { post_id: id });
+      await db.deleteWhere('comments', { post_id: id });
       await db.delete('posts', id);
 
       return sendJSON(res, { message: 'Post deleted' });
@@ -85,4 +85,4 @@ export default async function handler(req, res) {
   }
 
   return sendError(res, 'Method not allowed', 405);
-        }
+}
